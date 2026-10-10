@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KISAN AI - National AI Farming & Agricultural Intelligence Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+    <!-- Top Gov-Grade Header -->
+    <header class="header-top">
+        <div class="header-top-inner">
+            <div class="brand-badge">
+                <div class="brand-logo-icon">🌾</div>
+                <div class="brand-title-wrap">
+                    <h1>KISAN AI <span class="gov-verified-pill">National Agri Portal</span></h1>
+                    <div class="brand-tagline">AI Powered Diagnostic & Advisory Ecosystem for Indian Farmers</div>
+                </div>
+            </div>
+
+            <div class="header-meta-actions">
+                <div class="kisan-helpline-chip" style="background: rgba(16, 185, 129, 0.2); border-color: #34d399;">
+                    ⚡ Supabase: <strong>{% if supabase_connected %}<span style="color:#86efac;">Connected</span>{% else %}<span style="color:#fde047;">Ready to Link</span>{% endif %}</strong>
+                </div>
+                <div class="kisan-helpline-chip">
+                    📞 Kisan Call Centre: <strong>1800-180-1551</strong> (Toll Free)
+                </div>
+                <div class="lang-selector-box">
+                    <span>🌐</span>
+                    <select id="global-lang-select" aria-label="Language Selector">
+                        <option value="en">English (ENG)</option>
+                        <option value="hi" selected>हिन्दी (Hindi)</option>
+                        <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+                        <option value="te">తెలుగు (Telugu)</option>
+                        <option value="ta">தமிழ் (Tamil)</option>
+                        <option value="bn">বাংলা (Bengali)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tab-bar">
+        <div class="nav-tab-inner">
+            <button class="nav-tab-btn active" data-target="tab-disease">
+                🔬 Crop Disease Diagnosis
+            </button>
+            <button class="nav-tab-btn" data-target="tab-mandi">
+                📊 Mandi Price Rates
+            </button>
+            <button class="nav-tab-btn" data-target="tab-weather">
+                🌤️ Weather & Agromet Advisory
+            </button>
+            <button class="nav-tab-btn" data-target="tab-chatbot">
+                🤖 'Hal' AI Assistant
+            </button>
+            <button class="nav-tab-btn" data-target="tab-schemes">
+                🏛️ Government Schemes & Portals
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="main-wrapper">
+
+        <!-- Top Announcement & Statistics Banner -->
+        <section class="hero-stats-banner">
+            <div>
+                <h2>Digital Agricultural Intelligence for Every Farmer</h2>
+                <p>Equipped with computerized leaf lesion analysis, e-NAM mandi wholesale rates, precision agro-meteorology, and 'Hal' multilingual assistance.</p>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number">1,361+</span>
+                    <span class="stat-label">e-NAM Mandis Tracked</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">98.4%</span>
+                    <span class="stat-label">Diagnostic Accuracy</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">6+</span>
+                    <span class="stat-label">Regional Indian Languages</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 1: CROP DISEASE DETECTION ================= -->
+        <section id="tab-disease" class="tab-content-panel active">
+            <div class="kisan-card">
+                <div class="card-title-bar">
+                    <h3>🔬 AI Crop Disease Detection via Foliage Photo</h3>
+                    <span style="font-size:0.85rem; color:#475569;">Instant identification of leaf blight, yellow rust, leaf curl, and blast</span>
+                </div>
+
+                <div class="diagnosis-layout">
+                    <!-- Left: Upload Section -->
+                    <div>
+                        <div class="upload-zone" id="drop-zone">
+                            <input type="file" id="crop-file-input" accept="image/*" style="display:none;">
+                            <span class="upload-icon">📸</span>
+                            <div class="upload-prompt">Click to browse or drag & drop leaf photo</div>
+                            <div class="upload-sub">Supports JPG, PNG, WEBP from mobile cameras or field scouting</div>
+                        </div>
+
+                        <!-- Image Preview -->
+                        <div class="preview-container" id="preview-container">
+                            <img id="image-preview" src="" alt="Foliage preview">
+                            <div style="margin-top:10px;">
+                                <button class="btn-secondary" id="btn-reset-upload">Change Image</button>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <select id="crop-type-select" class="form-select">
+                                <option value="auto">Auto-detect Crop Type</option>
+                                <option value="tomato">Tomato (टमाटर)</option>
+                                <option value="wheat">Wheat (गेहूं)</option>
+                                <option value="rice">Rice / Paddy (धान)</option>
+                                <option value="potato">Potato (आलू)</option>
+                                <option value="cotton">Cotton (कपास)</option>
+                            </select>
+                            <button class="btn-primary" id="btn-diagnose">
+                                <span>⚡ Diagnose Crop</span>
+                            </button>
+                        </div>
+
+                        <!-- Quick Test Presets -->
+                        <div style="margin-top: 20px;">
+                            <div style="font-size: 0.82rem; font-weight:700; color:#475569; margin-bottom: 6px;">
+                                Quick Test Samples (No camera? Test with verified field cases):
+                            </div>
+                            <div class="preset-chips">
+                                <button class="preset-chip-btn" onclick="loadSampleCrop('tomato_early_blight', 'tomato')">🍅 Tomato Early Blight</button>
+                                <button class="preset-chip-btn" onclick="loadSampleCrop('wheat_yellow_rust', 'wheat')">🌾 Wheat Yellow Rust</button>
+                                <button class="preset-chip-btn" onclick="loadSampleCrop('rice_blast', 'rice')">🍚 Rice Blast</button>
+                                <button class="preset-chip-btn" onclick="loadSampleCrop('potato_late_blight', 'potato')">🥔 Potato Late Blight</button>
+                                <button class="preset-chip-btn" onclick="loadSampleCrop('healthy_crop', 'tomato')">🌱 Healthy Foliage</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Results Section -->
+                    <div>
+                        <div id="diagnosis-empty" class="result-box-empty">
+                            <div style="font-size: 40px; margin-bottom: 12px;">🌿</div>
+                            <div style="font-weight: 700; font-size: 1.05rem; margin-bottom: 4px;">Awaiting Crop Photo</div>
+                            <div>Upload a leaf image or select a sample on the left to view pathology breakdown, severity rating, and ICAR-approved treatments.</div>
+                        </div>
+
+                        <div id="diagnosis-result" class="result-box-content">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+                                <div>
+                                    <span id="res-severity-badge" class="badge-severity badge-high">High Risk</span>
+                                    <h3 id="res-disease-name" style="font-size: 1.35rem; color:#0f172a; margin-top:6px;">Early Blight</h3>
+                                    <div style="color:#64748b; font-size:0.88rem;">Affecting: <strong id="res-crop-name">Tomato</strong></div>
+                                </div>
+                                <div style="text-align:right;">
+                                    <span id="res-confidence" style="font-size:1.1rem; font-weight:800; color:#15803d;">94.2% Confidence</span>
+                                </div>
+                            </div>
+
+                            <!-- Visual Pigmentation Breakdown -->
+                            <div class="visual-bar-wrap">
+                                <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:600; color:#475569;">
+                                    <span>Leaf Tissue Health Distribution</span>
+                                    <span>Green: <b id="val-green">65%</b> | Yellowing: <b id="val-yellow">15%</b> | Necrosis: <b id="val-brown">12%</b> | Blight: <b id="val-dark">8%</b></span>
+                                </div>
+                                <div class="meter-track">
+                                    <div id="bar-green" class="meter-fill-green" style="width: 65%;"></div>
+                                    <div id="bar-yellow" class="meter-fill-yellow" style="width: 15%;"></div>
+                                    <div id="bar-brown" class="meter-fill-brown" style="width: 12%;"></div>
+                                    <div id="bar-dark" class="meter-fill-dark" style="width: 8%;"></div>
+                                </div>
+                            </div>
+
+                            <!-- Etiology & Symptoms -->
+                            <div style="margin-bottom:14px;">
+                                <div style="font-weight:700; font-size:0.9rem; color:#1e293b;">Underlying Etiology / Cause:</div>
+                                <div id="res-cause" style="font-size:0.88rem; color:#475569; margin-top:2px;">Fungal pathogen Alternaria solani.</div>
+                            </div>
+
+                            <div style="margin-bottom:14px;">
+                                <div style="font-weight:700; font-size:0.9rem; color:#1e293b;">Observed Symptoms:</div>
+                                <ul id="res-symptoms-list" class="treatment-list" style="margin-top:4px;"></ul>
+                            </div>
+
+                            <!-- Organic & Bio Solutions -->
+                            <div class="treatment-section">
+                                <div class="treatment-title" style="color:#15803d;">
+                                    <span>🍃 Organic & Biological Management</span>
+                                </div>
+                                <ul id="res-organic-list" class="treatment-list"></ul>
+                            </div>
+
+                            <!-- Chemical Control Measures -->
+                            <div class="treatment-section chem">
+                                <div class="treatment-title" style="color:#0369a1;">
+                                    <span>🧪 Recommended Chemical Fungicides / Pesticides</span>
+                                </div>
+                                <ul id="res-chemical-list" class="treatment-list"></ul>
+                            </div>
+
+                            <!-- Preventive Agronomy -->
+                            <div style="margin-top:14px;">
+                                <div style="font-weight:700; font-size:0.88rem; color:#1e293b;">Farm Sanitation & Preventive Steps:</div>
+                                <ul id="res-prevention-list" class="treatment-list" style="margin-top:4px; font-size:0.85rem; color:#475569;"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 2: MANDI PRICES ================= -->
+        <section id="tab-mandi" class="tab-content-panel">
+            <div class="kisan-card">
+                <div class="card-title-bar">
+                    <h3>📊 Real-time Mandi Price Rates (APMC & e-NAM)</h3>
+                    <span style="font-size:0.85rem; color:#475569;">Daily arrivals, Minimum, Maximum, and Modal wholesale rates</span>
+                </div>
+
+                <!-- Filters -->
+                <div class="filter-bar">
+                    <input type="text" id="mandi-search" class="form-input" style="flex:1.5; min-width:220px;" placeholder="Search commodity, mandi name, or district...">
+                    <select id="mandi-state-filter" class="form-select" style="flex:1; min-width:180px;">
+                        <option value="">All States / UTs</option>
+                        <option value="Madhya Pradesh">Madhya Pradesh</option>
+                        <option value="Punjab">Punjab</option>
+                        <option value="Haryana">Haryana</option>
+                        <option value="Uttar Pradesh">Uttar Pradesh</option>
+                        <option value="Maharashtra">Maharashtra</option>
+                        <option value="Gujarat">Gujarat</option>
+                        <option value="Rajasthan">Rajasthan</option>
+                        <option value="Karnataka">Karnataka</option>
+                        <option value="West Bengal">West Bengal</option>
+                        <option value="Delhi">Delhi</option>
+                    </select>
+                    <select id="mandi-category-filter" class="form-select" style="flex:1; min-width:160px;">
+                        <option value="">All Commodities</option>
+                        <option value="wheat">Wheat (गेहूं)</option>
+                        <option value="rice">Paddy / Rice (धान)</option>
+                        <option value="tomato">Tomato (टमाटर)</option>
+                        <option value="onion">Onion (प्याज)</option>
+                        <option value="potato">Potato (आलू)</option>
+                        <option value="cotton">Cotton (कपास)</option>
+                        <option value="soybean">Soybean (सोयाबीन)</option>
+                        <option value="mustard">Mustard (सरसों)</option>
+                        <option value="chana">Gram / Chana (चना)</option>
+                    </select>
+                </div>
+
+                <!-- Mandi Table -->
+                <div class="mandi-table-wrap">
+                    <table class="mandi-table">
+                        <thead>
+                            <tr>
+                                <th>Commodity & Variety</th>
+                                <th>Market (Mandi)</th>
+                                <th>Min Price</th>
+                                <th>Max Price</th>
+                                <th>Modal Rate</th>
+                                <th>Day Trend</th>
+                                <th>Govt MSP</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mandi-tbody">
+                            {% for item in initial_mandi %}
+                            <tr>
+                                <td>
+                                    <strong>{{ item.commodity }}</strong><br>
+                                    <small style="color:#64748b;">Variety: {{ item.variety }}</small>
+                                </td>
+                                <td>
+                                    <span>{{ item.mandi }}</span><br>
+                                    <small style="color:#64748b;">{{ item.district }}, {{ item.state }}</small>
+                                </td>
+                                <td>₹{{ item.min_price }}</td>
+                                <td>₹{{ item.max_price }}</td>
+                                <td>
+                                    <span class="price-modal-val">₹{{ item.modal_price }}</span>
+                                    <small style="display:block; color:#64748b; font-size:0.75rem;">{{ item.unit }}</small>
+                                </td>
+                                <td>
+                                    <span class="trend-badge {{ item.trend }}">
+                                        {% if item.trend == 'up' %}▲{% elif item.trend == 'down' %}▼{% else %}●{% endif %} {{ item.price_change }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span style="font-size:0.85rem; font-weight:600;">
+                                        {% if item.msp %}₹{{ item.msp }}{% else %}Market Driven{% endif %}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 3: WEATHER & AGROMET ADVISORY ================= -->
+        <section id="tab-weather" class="tab-content-panel">
+            <div class="kisan-card">
+                <div class="card-title-bar">
+                    <h3>🌤️ Precision Agromet Weather Forecast</h3>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span style="font-size:0.85rem; font-weight:600;">Select Farming Region:</span>
+                        <select id="weather-city-select" class="form-select" style="width: auto; padding: 6px 12px;">
+                            {% for loc in locations %}
+                            <option value="{{ loc }}" {% if loc == 'Indore' %}selected{% endif %}>{{ loc }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div id="weather-loading" style="display:none; text-align:center; padding:12px; color:#15803d; font-weight:700;">
+                    Fetching satellite meteorology...
+                </div>
+
+                <!-- Weather Hero Overview -->
+                <div class="weather-hero">
+                    <div>
+                        <div style="font-size:0.85rem; text-transform:uppercase; letter-spacing:1px; opacity:0.9;">Current District Conditions</div>
+                        <h2 id="weather-city-display" style="font-size:2rem; margin:4px 0 12px;">Indore, Madhya Pradesh</h2>
+                        <div style="display:flex; align-items:baseline; gap:16px;">
+                            <span id="weather-temp-display" class="weather-temp-huge">28°C</span>
+                            <span id="weather-cond-display" style="font-size:1.25rem; font-weight:600;">🌤️ Mainly Clear</span>
+                        </div>
+
+                        <div class="weather-metric-row">
+                            <div class="weather-metric-box">
+                                💧 Relative Humidity: <strong id="weather-humidity-display">55%</strong>
+                            </div>
+                            <div class="weather-metric-box">
+                                💨 Wind Velocity: <strong id="weather-wind-display">10.2 km/h</strong>
+                            </div>
+                            <div class="weather-metric-box">
+                                🌍 Agro-Soil: <strong id="weather-soil-display">Deep Black Regur</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Agromet Callout Box -->
+                    <div class="advisory-callout">
+                        <h4>🌱 Field Operation Advisories</h4>
+                        <div style="font-size:0.88rem; margin-bottom:12px;">
+                            <span style="color:#059669; font-weight:700;">Spraying Advisory:</span>
+                            <div id="advisory-spray-box" style="margin-top:2px; color:#334155;">
+                                Optimal: Wind speed and low precipitation allow safe chemical or bio-spray.
+                            </div>
+                        </div>
+                        <div style="font-size:0.88rem; margin-bottom:12px;">
+                            <span style="color:#0284c7; font-weight:700;">Irrigation Decision:</span>
+                            <div id="advisory-irrigation-box" style="margin-top:2px; color:#334155;">
+                                Standard drip/furrow irrigation recommended.
+                            </div>
+                        </div>
+                        <div style="font-size:0.88rem;">
+                            <span style="color:#dc2626; font-weight:700;">Fungal Spore Risk:</span>
+                            <div id="advisory-fungal-box" style="margin-top:2px; color:#334155;">
+                                Low Risk (Humidity is under threshold).
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7-Day Forecast Strip -->
+                <div>
+                    <h4 style="font-size:1rem; font-weight:700; margin-bottom:12px; color:#1e293b;">7-Day Agricultural Outlook</h4>
+                    <div class="forecast-cards-grid" id="forecast-grid"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 4: HAL MULTILINGUAL AI ASSISTANT ================= -->
+        <section id="tab-chatbot" class="tab-content-panel">
+            <div class="kisan-card" style="padding: 0; overflow:hidden;">
+                <div class="chat-window-container">
+                    
+                    <!-- Left: Assistant Details -->
+                    <div class="chat-sidebar">
+                        <div>
+                            <div class="bot-profile">
+                                <div class="bot-avatar">🚜</div>
+                                <div class="bot-info">
+                                    <h4>Hal (हल)</h4>
+                                    <div class="bot-status">Online • 24x7 Agri Advisory</div>
+                                </div>
+                            </div>
+
+                            <p style="font-size:0.82rem; color:#475569; margin-bottom:16px;">
+                                Trained on ICAR research packages, e-NAM market intelligence, and PM-KISAN guidelines across 6 languages.
+                            </p>
+
+                            <div style="margin-bottom:14px;">
+                                <label style="font-size:0.75rem; font-weight:700; color:#475569; display:block; margin-bottom:4px;">
+                                    Chat Language / भाषा:
+                                </label>
+                                <select id="hal-lang-select" class="form-select" style="font-size:0.85rem; padding:6px 10px;">
+                                    <option value="en">English</option>
+                                    <option value="hi" selected>हिन्दी (Hindi)</option>
+                                    <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+                                    <option value="te">తెలుగు (Telugu)</option>
+                                    <option value="ta">தமிழ் (Tamil)</option>
+                                    <option value="bn">বাংলা (Bengali)</option>
+                                </select>
+                            </div>
+
+                            <div style="font-size:0.8rem; font-weight:700; color:#1e293b; margin-bottom:6px;">Sample Inquiries:</div>
+                            <div style="display:flex; flex-direction:column; gap:6px;">
+                                <button class="preset-chip-btn" style="text-align:left;" onclick="submitChatMessage('आज गेहूं और प्याज का क्या भाव है?')">
+                                    🌾 "आज गेहूं का भाव क्या है?"
+                                </button>
+                                <button class="preset-chip-btn" style="text-align:left;" onclick="submitChatMessage('PM-KISAN के ₹6000 कैसे मिलेंगे?')">
+                                    💰 "PM-KISAN ₹6,000 कैसे मिलेंगे?"
+                                </button>
+                                <button class="preset-chip-btn" style="text-align:left;" onclick="submitChatMessage('टमाटर में पत्तियों पर काले धब्बे दिख रहे हैं, क्या करें?')">
+                                    🍅 "टमाटर में काले धब्बों का इलाज"
+                                </button>
+                                <button class="preset-chip-btn" style="text-align:left;" onclick="submitChatMessage('क्या आज कीटनाशक का स्प्रे करना ठीक रहेगा?')">
+                                    🌧️ "आज स्प्रे करना ठीक रहेगा?"
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Integration Hook Box for Friend's Code -->
+                        <div style="background: #f0fdf4; border: 1px dashed #86efac; border-radius: 8px; padding: 10px; margin-top: 12px; font-size: 0.75rem; color: #166534;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                                <strong>🔌 Bot Integration Hook</strong>
+                                <span style="background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight: 700; font-size: 0.7rem;">Active</span>
+                            </div>
+                            <div>Linked file: <code>bot_adapter.py</code></div>
+                            <div style="color: #475569; margin-top: 2px;">Ready for your friend's API or Python function.</div>
+                        </div>
+
+                        <div style="font-size:0.75rem; color:#94a3b8; border-top:1px solid #e2e8f0; padding-top:12px; margin-top: 12px;">
+                            Powered by KISAN AI Natural Intelligence Engine
+                        </div>
+                    </div>
+
+                    <!-- Right: Chat Messages Stream -->
+                    <div class="chat-main">
+                        <div class="chat-messages-area" id="chat-messages">
+                            <!-- Initial Bot Greeting -->
+                            <div class="chat-bubble bot">
+                                नमस्ते किसान भाई! मैं <strong>'हल' (Hal)</strong> हूँ, KISAN AI का आपका डिजिटल कृषि सहायक। फसल रोग पहचान, ताज़ा मंडी भाव, मौसम सलाह या सरकारी योजनाओं (PM-KISAN, फसल बीमा) के बारे में आप मुझसे कभी भी पूछ सकते हैं।
+                            </div>
+                        </div>
+
+                        <!-- Suggestions Bar -->
+                        <div id="chat-quick-suggestions" style="padding: 6px 20px; display:flex; gap:8px; overflow-x:auto;"></div>
+
+                        <!-- Input Bar -->
+                        <div class="chat-input-bar">
+                            <input type="text" id="chat-input" class="chat-input-field" placeholder="Ask Hal anything in Hindi, English, Punjabi, etc...">
+                            <button class="btn-primary" id="btn-send-chat" style="padding:10px 20px;">
+                                <span>Send ➔</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 5: GOVERNMENT SCHEMES & PORTALS ================= -->
+        <section id="tab-schemes" class="tab-content-panel">
+            <div class="kisan-card">
+                <div class="card-title-bar">
+                    <h3>🏛️ Central & State Government Welfare Schemes</h3>
+                    <span style="font-size:0.85rem; color:#475569;">Direct Benefit Transfer, subsidies, crop insurance, and credit facilities</span>
+                </div>
+
+                <div class="schemes-grid">
+                    {% for s in schemes %}
+                    <div class="scheme-card">
+                        <div>
+                            <span class="scheme-badge">{{ s.category }}</span>
+                            <h4 class="scheme-title">{{ s.name }}</h4>
+                            <div style="font-size:0.78rem; color:#64748b; margin-bottom:8px;">{{ s.ministry }}</div>
+                            <p style="font-size:0.85rem; color:#475569;">{{ s.description }}</p>
+
+                            <div class="scheme-benefit">
+                                <strong>Direct Benefit:</strong> {{ s.benefit }}
+                            </div>
+
+                            <div style="font-size:0.82rem; margin-top:8px;">
+                                <strong>Documents Required:</strong>
+                                <ul style="padding-left:18px; margin-top:4px; color:#475569;">
+                                    {% for doc in s.documents %}
+                                    <li>{{ doc }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div style="margin-top:16px; padding-top:12px; border-top:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-size:0.75rem; color:#64748b;">Helpline: <b>{{ s.helpline }}</b></span>
+                            <a href="{{ s.portal_url }}" target="_blank" rel="noopener noreferrer" class="btn-primary" style="padding:6px 14px; font-size:0.82rem; text-decoration:none;">
+                                Apply Official ↗
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Official Portals Directory -->
+            <div class="kisan-card">
+                <div class="card-title-bar">
+                    <h3>🌐 Verified National Agricultural Portals & Websites</h3>
+                    <span style="font-size:0.85rem; color:#475569;">Direct authentic links to government portals, research institutes, and weather bureaus</span>
+                </div>
+
+                <div class="websites-directory-grid">
+                    {% for site in websites %}
+                    <a href="{{ site.url }}" target="_blank" rel="noopener noreferrer" class="website-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                            <span style="font-size:0.72rem; font-weight:700; background:#e0f2fe; color:#0369a1; padding:2px 8px; border-radius:12px;">{{ site.badge }}</span>
+                            <span style="color:#0284c7; font-weight:700; font-size:0.85rem;">Visit ↗</span>
+                        </div>
+                        <h4 style="font-size:0.98rem; font-weight:700; margin-bottom:4px; color:#0f172a;">{{ site.title }}</h4>
+                        <div style="font-size:0.78rem; color:#64748b; margin-bottom:8px;">{{ site.category }}</div>
+                        <p style="font-size:0.82rem; color:#475569;">{{ site.desc }}</p>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer-wrap">
+        <div class="footer-inner">
+            <div>
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+                    <span style="font-size:24px;">🌾</span>
+                    <strong style="color:white; font-size:1.2rem;">KISAN AI</strong>
+                </div>
+                <p style="font-size:0.85rem; line-height:1.6;">
+                    An AI-powered agricultural intelligence portal dedicated to empowering Indian farmers with real-time leaf disease diagnosis, e-NAM mandi prices, agromet advisory, and direct access to central and state government schemes.
+                </p>
+            </div>
+            <div>
+                <h4 style="color:white; margin-bottom:12px; font-size:0.95rem;">Emergency Helplines</h4>
+                <ul style="list-style:none; font-size:0.85rem; display:flex; flex-direction:column; gap:6px;">
+                    <li>Kisan Call Centre: <strong>1800-180-1551</strong></li>
+                    <li>PM-KISAN Helpline: <strong>155261 / 011-24300606</strong></li>
+                    <li>e-NAM Toll Free: <strong>1800-270-0224</strong></li>
+                    <li>Agri Machinery SMAM: <strong>1800-180-1551</strong></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="color:white; margin-bottom:12px; font-size:0.95rem;">Key Resources</h4>
+                <ul style="list-style:none; font-size:0.85rem; display:flex; flex-direction:column; gap:6px;">
+                    <li><a href="https://pmkisan.gov.in" target="_blank" style="color:#94a3b8; text-decoration:none;">PM-KISAN Portal</a></li>
+                    <li><a href="https://pmfby.gov.in" target="_blank" style="color:#94a3b8; text-decoration:none;">PM Fasal Bima Yojana</a></li>
+                    <li><a href="https://enam.gov.in" target="_blank" style="color:#94a3b8; text-decoration:none;">e-NAM Mandi Network</a></li>
+                    <li><a href="https://mausam.imd.gov.in" target="_blank" style="color:#94a3b8; text-decoration:none;">IMD Agromet Advisory</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            © 2026 KISAN AI • Developed for Indian Agriculture & Farming Welfare • All Government Data Sourced from Official Portals
+        </div>
+    </footer>
+
+    <script src="/static/js/main.js"></script>
+</body>
+</html>
